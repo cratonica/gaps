@@ -26,7 +26,7 @@ CCSRCS=R2Shapes.cpp \
 # Dependencies
 #
 
-PKG_DEPENDENCIES = RNBasics jpeg png
+PKG_DEPENDENCIES = RNBasics
 
 
 

@@ -1,7 +1,6 @@
 // Source file for the surfel labeler program
 
 
-
 ////////////////////////////////////////////////////////////////////////
 // Include files
 ////////////////////////////////////////////////////////////////////////
@@ -328,7 +327,16 @@ ParseArgs(int argc, char **argv)
   // Return OK status 
   return 1;
 }
+#ifdef __EMSCRIPTEN__
 
+// TODO: Obviously this won't work for production code,
+// but we need to seed the virtual filesystem with some test data.
+void SeedFilesystem(void) {
+  // Set up with --preload-file
+  scene_filename = "/scene.ssa";
+  database_filename = "/scene.ssb";
+}
+#endif
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -337,9 +345,14 @@ ParseArgs(int argc, char **argv)
 
 int main(int argc, char **argv)
 {
+#ifdef __EMSCRIPTEN__
+  SeedFilesystem();
+#else
   // Parse program arguments
   if (!ParseArgs(argc, argv)) exit(-1);
+#endif
 
+ 
   // Open scene
   scene = OpenScene(scene_filename, database_filename);
   if (!scene) exit(-1);

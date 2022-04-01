@@ -540,9 +540,11 @@ DrawFaces(int color_scheme) const
 {
   // Enable lighting and material
   if (color_scheme == RGBD_RENDER_COLOR_SCHEME) {
+#if 0
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_LIGHTING);
+#endif
   }
 
   // Load color

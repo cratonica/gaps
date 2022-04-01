@@ -101,8 +101,8 @@ int RasterizeSDF(R2Grid& grid, const R2Polygon& polygon, int end_condition)
       double dx2 = cos(angle2);
       double dy2 = sin(angle2);
       glVertex3f(p1->X(), p1->Y(), 0.0);
-      glVertex3d(p1->X() + max_distance * dx1, p1->Y() + max_distance * dy1, -max_distance);
-      glVertex3d(p1->X() + max_distance * dx2, p1->Y() + max_distance * dy2, -max_distance);
+      glVertex3f(p1->X() + max_distance * dx1, p1->Y() + max_distance * dy1, -max_distance);
+      glVertex3f(p1->X() + max_distance * dx2, p1->Y() + max_distance * dy2, -max_distance);
       dx1 = dx2;
       dy1 = dy2;
     }
@@ -122,8 +122,8 @@ int RasterizeSDF(R2Grid& grid, const R2Polygon& polygon, int end_condition)
       double dx2 = cos(angle2);
       double dy2 = sin(angle2);
       glVertex3f(p1->X(), p1->Y(), 0.0);
-      glVertex3d(p1->X() + max_distance * dx1, p1->Y() + max_distance * dy1, -max_distance);
-      glVertex3d(p1->X() + max_distance * dx2, p1->Y() + max_distance * dy2, -max_distance);
+      glVertex3f(p1->X() + max_distance * dx1, p1->Y() + max_distance * dy1, -max_distance);
+      glVertex3f(p1->X() + max_distance * dx2, p1->Y() + max_distance * dy2, -max_distance);
       dx1 = dx2;
       dy1 = dy2;
     }

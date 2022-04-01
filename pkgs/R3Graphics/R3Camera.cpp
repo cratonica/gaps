@@ -226,7 +226,7 @@ Halfspace(RNDirection dir, RNDimension dim) const
 const R4Matrix R3Camera::
 Perspective(void) const
 {
-#if FALSE
+#if 0
     // Return 4x4 perspective matrix
     double m[4][4];
     glMatrixMode(GL_PROJECTION);

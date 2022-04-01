@@ -39,7 +39,8 @@ EXE = $(EXE_DIR)/$(NAME)
 # Set up link options
 #
 
-BASE_LDFLAGS=$(USER_LDFLAGS) -L$(LIB_DIR)
+BASE_LDFLAGS=$(USER_LDFLAGS) -L$(LIB_DIR) -s WASM=1 -s MIN_WEBGL_VERSION=2 -s MAX_WEBGL_VERSION=2 -s LEGACY_GL_EMULATION=1 -s ASSERTIONS=1 -s EXPORTED_RUNTIME_METHODS=printErr -s ALLOW_MEMORY_GROWTH=1 --preload-file ~/scenes@
+#BASE_LDFLAGS=$(USER_LDFLAGS) -L$(LIB_DIR)
 DEBUG_LDFLAGS=$(BASE_LDFLAGS) -g
 OPT_LDFLAGS=$(BASE_LDFLAGS) -O 
 LDFLAGS=$(DEBUG_LDFLAGS)
@@ -54,7 +55,7 @@ OPENGL_LIBS=-lfglut -lglew32s -lglu32 -lopengl32 -lwinmm -lgdi32
 else ifeq ("$(OS)","Darwin")
 OPENGL_LIBS=-framework GLUT -framework opengl
 else
-OPENGL_LIBS=-pthread -lfglut -lGLEW -lGLU -lGL -lX11 -lm
+OPENGL_LIBS=-lglut -lGLEW -lGLU -lGL -lX11 -lm
 endif
 LIBS=$(PKG_LIBS) $(USER_LIBS) $(OPENGL_LIBS)
 
@@ -75,7 +76,7 @@ mesa:
 
 $(EXE):	    $(OBJS) $(LIB_DIR)/*.a
 	    mkdir -p $(EXE_DIR)
-	    $(CC) -o $(EXE) $(LDFLAGS) $(USER_OBJS) $(OBJS) $(LIBS)
+	    $(CC) -o $(EXE).html $(LDFLAGS) $(USER_OBJS) $(OBJS) $(LIBS)
 
 release:
 	    mkdir -p $(RELEASE_DIR)/apps

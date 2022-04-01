@@ -5,6 +5,7 @@
 /* Include files */
 
 #include "R3Shapes.h"
+#include <iostream>
 
 
 
@@ -759,6 +760,9 @@ Draw(const R3DrawFlags draw_flags) const
 void R3Cylinder::
 Draw(const R3DrawFlags draw_flags) const
 {
+#if 1
+  std::cerr << "R3Cylinder::Draw() unimplemented\n";
+#else
 #if (RN_3D_GRFX == RN_OPENGL)
     // Create GLU quadric
     static GLUquadricObj *cylinder = gluNewQuadric();
@@ -797,6 +801,7 @@ Draw(const R3DrawFlags draw_flags) const
 #else
     RNAbort("Not Implemented");
 #endif
+#endif // 1
 }
 
 
@@ -804,6 +809,9 @@ Draw(const R3DrawFlags draw_flags) const
 void R3Cone::
 Draw(const R3DrawFlags draw_flags) const
 {
+#if 1
+  std::cerr << "R3Cone::Draw() unimplemented\n";
+#else
 #if (RN_3D_GRFX == RN_OPENGL)
     // Create GLU quadric
     // Should create GLU quadric for each draw style ???
@@ -841,6 +849,7 @@ Draw(const R3DrawFlags draw_flags) const
 #else
     RNAbort("Not Implemented");
 #endif
+#endif
 }
 
 
@@ -848,6 +857,9 @@ Draw(const R3DrawFlags draw_flags) const
 void R3Sphere::
 Draw(const R3DrawFlags draw_flags) const
 {
+#if 1
+  std::cerr << "R3Sphere::Draw() unimplemented\n";
+#else
     // Draw sphere - sphdraw uses n3f only ???
 #if (RN_3D_GRFX == RN_IRISGL)
     float sphparams[4];
@@ -896,6 +908,7 @@ Draw(const R3DrawFlags draw_flags) const
 #else
     RNAbort("Not Implemented");
 #endif
+#endif // 1
 }
 
 
@@ -903,6 +916,9 @@ Draw(const R3DrawFlags draw_flags) const
 void R3Ellipsoid::
 Draw(const R3DrawFlags draw_flags) const
 {
+#if 1
+  std::cerr << "R3Ellipsoid::Draw() unimplemented\n";
+#else
     // Push matrix
     R4Matrix matrix = R4identity_matrix;
     matrix.Transform(cs.Matrix());
@@ -914,6 +930,7 @@ Draw(const R3DrawFlags draw_flags) const
 
     // Pop matrix
     matrix.Pop();
+#endif
 }
 
 

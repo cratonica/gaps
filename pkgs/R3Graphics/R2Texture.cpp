@@ -250,6 +250,7 @@ Load(void) const
   else if (image->Depth() == 4) format = GL_RGBA;
   else RNAbort("Illegal texture image");
 
+#if 0
 #ifdef AT_ONE_POINT_THIS_WAS_NEEDED_FOR_MESA
   // For some reason, gluBuild2DMipmaps segfaults in mesa
   glTexImage2D(GL_TEXTURE_2D, 0, format, image->Width(), image->Height(),
@@ -268,6 +269,9 @@ Load(void) const
       0, format, GL_UNSIGNED_BYTE, (const unsigned char *) image->Pixels());
   }
 #endif
+#endif // 0
+  // Just disable mipmaps for now since not supported in Emscripten.
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
   // End texture definition
   glBindTexture(GL_TEXTURE_2D, 0);

@@ -47,12 +47,12 @@ R3SurfelLabeler(R3SurfelScene *scene, const char *logging_filename)
     attribute_menu_names(),
     attribute_menu_item_width(190),
     attribute_menu_item_height(14),
-    attribute_menu_font(GLUT_BITMAP_HELVETICA_12),
+    //attribute_menu_font(GLUT_BITMAP_HELVETICA_12),
     label_menu_visibility(1),
     label_menu_list(),
     label_menu_item_width(190),
     label_menu_item_height(14),
-    label_menu_font(GLUT_BITMAP_HELVETICA_12),
+    //label_menu_font(GLUT_BITMAP_HELVETICA_12),
     snapshot_directory(NULL),
     object_selection_times()
 {
@@ -195,6 +195,7 @@ DrawObjectSelections(void) const
 void R3SurfelLabeler::
 DrawObjectLabels(void) const
 {
+#if 0
   // Check stuff
   if (!object_label_visibility) return;
   
@@ -238,6 +239,7 @@ DrawObjectLabels(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 
@@ -1104,6 +1106,8 @@ SelectEnclosedObjects(const R2Box& box, RNBoolean shift, RNBoolean ctrl, RNBoole
   if (!scene) return 0;
   if (box.IsEmpty()) return 0;
   if (!SurfelVisibility()) return 0;
+  return 0;
+#if 0
   
   // Get projection matrices
   GLdouble p[3];
@@ -1175,6 +1179,7 @@ SelectEnclosedObjects(const R2Box& box, RNBoolean shift, RNBoolean ctrl, RNBoole
 
   // Return success
   return 1;
+#endif
 }
 
 
@@ -1187,6 +1192,9 @@ SelectEnclosedObjects(const R2Polygon& polygon, RNBoolean shift, RNBoolean ctrl,
   if (polygon.IsLinear()) return 0;
   if (polygon.NPoints() < 3) return 0;
   if (!SurfelVisibility()) return 0;
+
+  return 0;
+#if 0
 
   // Get projection matrices
   GLdouble p[3];
@@ -1263,6 +1271,7 @@ SelectEnclosedObjects(const R2Polygon& polygon, RNBoolean shift, RNBoolean ctrl,
 
   // Return success
   return 1;
+#endif
 }
 
 
@@ -3369,8 +3378,10 @@ DrawRubberBox(RNBoolean front_buffer, RNBoolean xor_op) const
 
   // Set logic op
   if (xor_op) {
+#if 0
     glLogicOp(GL_XOR);
     glEnable(GL_COLOR_LOGIC_OP);
+#endif
   }
   
   // Set rendering modes
@@ -3433,8 +3444,10 @@ DrawRubberPolygon(RNBoolean front_buffer, RNBoolean xor_op) const
 
   // Set logic op
   if (xor_op) {
+#if 0
     glLogicOp(GL_XOR);
     glEnable(GL_COLOR_LOGIC_OP);
+#endif
   }
   
   // Set rendering modes
@@ -3500,8 +3513,10 @@ DrawRubberLine(RNBoolean front_buffer, RNBoolean xor_op) const
 
   // Set logic op
   if (xor_op) {
+#if 0
     glLogicOp(GL_XOR);
     glEnable(GL_COLOR_LOGIC_OP);
+#endif
   }
   
   // Set rendering modes
@@ -3555,6 +3570,7 @@ DrawRubberLine(RNBoolean front_buffer, RNBoolean xor_op) const
 void R3SurfelLabeler::
 DrawMessage(void) const
 {
+#if 0
   // Check stuff
   if (!message) return;
   if (!message_visibility) return;
@@ -3602,6 +3618,7 @@ DrawMessage(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 
@@ -3613,6 +3630,7 @@ DrawMessage(void) const
 void R3SurfelLabeler::
 DrawStatus(void) const
 {
+#if 0
   // Check stuff
   if (!status_visibility) return;
 
@@ -3659,6 +3677,7 @@ DrawStatus(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 
@@ -3670,6 +3689,7 @@ DrawStatus(void) const
 void R3SurfelLabeler::
 DrawCommandMenu(void) const
 {
+#if 0
   // Only draw menu if it is visible
   if (!command_menu_visibility) return;
 
@@ -3729,6 +3749,7 @@ DrawCommandMenu(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 
@@ -3816,6 +3837,7 @@ LabelMenuBBox(void) const
 void R3SurfelLabeler::
 UpdateLabelMenu(void)
 {
+#if 0
   // Update label menu list
   if (label_menu_list.IsEmpty()) {
     // Add labels to list
@@ -3853,6 +3875,7 @@ UpdateLabelMenu(void)
     label_menu_item_height = 14;
     label_menu_item_width = 140;
   }
+#endif
 }
 
 
@@ -3860,6 +3883,7 @@ UpdateLabelMenu(void)
 void R3SurfelLabeler::
 DrawLabelMenu(void) const
 {
+#if 0
   // Only draw menu if it is visible
   if (!label_menu_visibility) return;
 
@@ -3982,6 +4006,7 @@ DrawLabelMenu(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 
@@ -4100,6 +4125,7 @@ AttributeMenuBBox(void) const
 void R3SurfelLabeler::
 DrawAttributeMenu(void) const
 {
+#if 0
   // Only draw menu if it is visible
   if (!attribute_menu_visibility) return;
 
@@ -4206,6 +4232,7 @@ DrawAttributeMenu(void) const
   glPopMatrix();
   glMatrixMode(GL_MODELVIEW);
   glPopMatrix();
+#endif
 }
 
 

@@ -276,7 +276,12 @@ R2LoadPoint(const double point[2])
 #if (RN_2D_GRFX == RN_IRISGL)
     v2d(point);
 #elif (RN_2D_GRFX == RN_OPENGL)
-    glVertex2dv(point);
+    //glVertex2dv(point);
+    float fpoint[2] = {
+      static_cast<float>(point[0]),
+      static_cast<float>(point[1]),
+    };
+    glVertex2fv(fpoint);
 #elif (RN_2D_GRFX == RN_XLIB)
     R2WindowToViewport(point[0], point[1], &RNgrfx_xpoints[RNgrfx_xnpoints].x, &RNgrfx_xpoints[RNgrfx_xnpoints].y);
     RNgrfx_xnpoints++;
@@ -495,7 +500,7 @@ R3LoadPoint(double x, double y, double z)
     point[2] = z;
     v3f(point);
 #elif (RN_3D_GRFX == RN_OPENGL)
-    glVertex3d(x, y, z);
+    glVertex3f(static_cast<float>(x), static_cast<float>(y), static_cast<float>(z));
 #else
     RNGrfxError("Not Implemented");
 #endif
@@ -528,7 +533,13 @@ R3LoadPoint(const double point[3])
 #if (RN_3D_GRFX == RN_IRISGL)
     v3d(point);
 #elif (RN_3D_GRFX == RN_OPENGL)
-    glVertex3dv(point);
+    //glVertex3dv(point);
+    float fpoint[3] = {
+      static_cast<float>(point[0]),
+      static_cast<float>(point[1]),
+      static_cast<float>(point[2]),
+    };
+    glVertex3fv(fpoint);
 #else
     RNGrfxError("Not Implemented");
 #endif
@@ -608,7 +619,13 @@ R3LoadNormal(const double normal[3])
 #if (RN_3D_GRFX == RN_IRISGL)
     n3d(normal);
 #elif (RN_3D_GRFX == RN_OPENGL)
-    glNormal3dv(normal);
+    //glNormal3dv(normal);
+    float fnormal[3] = {
+      static_cast<float>(normal[0]),
+      static_cast<float>(normal[1]),
+      static_cast<float>(normal[2]),
+    };
+    glNormal3fv(fnormal);
 #else
     RNGrfxError("Not Implemented");
 #endif
@@ -647,7 +664,8 @@ R3LoadTextureCoords(double x, double y)
     texcoords[1] = y; 
     t2d(texcoords);
 #elif (RN_3D_GRFX == RN_OPENGL)
-    glTexCoord2d(x, y);
+    //glTexCoord2d(x, y);
+    glTexCoord2f(static_cast<float>(x), static_cast<float>(y));
 #elif (RN_3D_GRFX == RN_3DR)
     R3dr_vertex_texcoords.x = x;
     R3dr_vertex_texcoords.y = y;
@@ -683,7 +701,12 @@ R3LoadTextureCoords(const double texcoords[2])
 #if (RN_3D_GRFX == RN_IRISGL)
     t2d(texcoords);
 #elif (RN_3D_GRFX == RN_OPENGL)
-    glTexCoord2dv(texcoords);
+    float ftexcoords[2] = {
+      static_cast<float>(texcoords[0]),
+      static_cast<float>(texcoords[1]),
+    };
+    glTexCoord2fv(ftexcoords);
+    //glTexCoord2dv(texcoords);
 #else
     RNGrfxError("Not Implemented");
 #endif

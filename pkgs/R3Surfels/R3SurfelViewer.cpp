@@ -5,6 +5,7 @@
 ////////////////////////////////////////////////////////////////////////
 // Include files
 ////////////////////////////////////////////////////////////////////////
+#include <iostream>
 
 #include "R3Graphics/R3Graphics.h"
 #include "R3Surfels/R3Surfels.h"
@@ -746,7 +747,9 @@ UpdateSelectedImageTexture(void)
     // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, selected_image_color_pixels.Width(), selected_image_color_pixels.Height(), 0, GL_RGB, GL_UNSIGNED_BYTE, selected_image_color_pixels.Pixels() );
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, 3, selected_image_color_pixels.Width(), selected_image_color_pixels.Height(), GL_RGB, GL_UNSIGNED_BYTE, selected_image_color_pixels.Pixels());
+  // Just disable mipmaps for now since not supported in Emscripten.
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  //  gluBuild2DMipmaps(GL_TEXTURE_2D, 3, selected_image_color_pixels.Width(), selected_image_color_pixels.Height(), GL_RGB, GL_UNSIGNED_BYTE, selected_image_color_pixels.Pixels());
   }
 
   // Remember last selected image
@@ -817,6 +820,8 @@ DrawSurfels(int color_scheme) const
   // Set point size
   if (color_scheme != R3_SURFEL_VIEWER_COLOR_BY_PICK_INDEX) glPointSize(surfel_size);
   else glPointSize(0.01 * Viewport().Width() + 1);
+
+  glPointSize(1);
 
 #if (R3_SURFEL_VIEWER_DRAW_METHOD == R3_SURFEL_VIEWER_DRAW_WITH_VBO)
   if (!shape_draw_flags[R3_SURFEL_DISC_DRAW_FLAG]) {
@@ -2065,7 +2070,7 @@ Initialize(void)
   // Initialize lights
   static GLfloat lmodel_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
   glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lmodel_ambient);
-  glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+  //glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
   static GLfloat light0_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
   static GLfloat light0_position[] = { 0.0, 0.0, -1.0, 0.0 };
   glLightfv(GL_LIGHT0, GL_DIFFUSE, light0_diffuse);
@@ -2080,7 +2085,7 @@ Initialize(void)
 
   // Initialize color settings
   glEnable(GL_COLOR_MATERIAL);
-  glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+  //glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
 
   // Initialize graphics modes
   glEnable(GL_DEPTH_TEST);
@@ -2571,6 +2576,8 @@ RotateWorld(RNScalar factor, const R3Point& origin, int, int, int dx, int dy)
 R3SurfelImage *R3SurfelViewer::
 PickImage(int x, int y, R3Point *picked_position) 
 {
+  return NULL;
+#if 0
   // How close the cursor has to be to a point (in pixels)
   int pick_tolerance = 0.01 * Viewport().Width() + 1;
 
@@ -2631,7 +2638,7 @@ PickImage(int x, int y, R3Point *picked_position)
   // Find hit position
   if (picked_position) {
     GLfloat depth;
-    GLdouble p[3];
+    GLfloat p[3];
     GLint viewport[4];
     GLdouble modelview_matrix[16];
     GLdouble projection_matrix[16];
@@ -2646,8 +2653,8 @@ PickImage(int x, int y, R3Point *picked_position)
 
   // Return picked image
   return picked_image;
+#endif
 }
-
 
 
 
@@ -2656,6 +2663,8 @@ PickNode(int x, int y, R3Point *picked_position,
   R3SurfelBlock **picked_block, int *picked_surfel_index,
   RNBoolean exclude_nonobjects) 
 {
+  return NULL;
+#if 0
   // How close the cursor has to be to a point (in pixels)
   int pick_tolerance = 0.005 * Viewport().Width() + 1;
 
@@ -2795,6 +2804,7 @@ PickNode(int x, int y, R3Point *picked_position,
 
   // Return picked node
   return picked_node;
+#endif
 }
 
 
@@ -2902,12 +2912,26 @@ InvalidateVBO(void)
   vbo_nsurfels = 0;
 }
 
+namespace {
+
+template <typename T>
+void PrintMatrix(T* matrix) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      ::std::cout << matrix[i*4+j] << " ";
+    }
+    ::std::cout << ::std::endl;
+  }
+  ::std::cout << ::std::endl << ::std::endl;
+}
+
+}
 
 
 void R3SurfelViewer::
 UpdateVBO(void)
 {
-#if (R3_SURFEL_VIEWER_DRAW_METHOD == R3_SURFEL_VIEWER_DRAW_WITH_VBO)
+//#if (R3_SURFEL_VIEWER_DRAW_METHOD == R3_SURFEL_VIEWER_DRAW_WITH_VBO)
   // Check if VBO is uptodate
   if (vbo_nsurfels > 0) return;
 
@@ -2963,7 +2987,7 @@ UpdateVBO(void)
         }
       }
     }
-  
+
     // Just checking
     assert(surfel_positionsp - surfel_positions == 3*vbo_nsurfels);
     assert(surfel_normalsp - surfel_normals == 3*vbo_nsurfels);
@@ -2978,17 +3002,19 @@ UpdateVBO(void)
     if (vbo_position_buffer && surfel_positions) {
       glBindBuffer(GL_ARRAY_BUFFER, vbo_position_buffer);
       glBufferData(GL_ARRAY_BUFFER, 3 * vbo_nsurfels * sizeof(GLfloat), surfel_positions, GL_STATIC_DRAW);
-      glVertexPointer(3, GL_FLOAT, 0, 0);
+      //glVertexPointer(3, GL_FLOAT, 0, 0);
     }
+#if 0
     if (vbo_normal_buffer && surfel_normals) {
       glBindBuffer(GL_ARRAY_BUFFER, vbo_normal_buffer);
       glBufferData(GL_ARRAY_BUFFER, 3 * vbo_nsurfels * sizeof(GLfloat), surfel_normals, GL_STATIC_DRAW);
       glNormalPointer(GL_FLOAT, 0, 0);
     }
+#endif
     if (vbo_color_buffer && surfel_colors) {
       glBindBuffer(GL_ARRAY_BUFFER, vbo_color_buffer);
       glBufferData(GL_ARRAY_BUFFER, 2 * 3 * vbo_nsurfels * sizeof(GLubyte), surfel_colors, GL_STATIC_DRAW);
-      glColorPointer(3, GL_UNSIGNED_BYTE, 0, 0);
+      //glColorPointer(3, GL_UNSIGNED_BYTE, 0, 0);
     }
   }
 
@@ -2996,7 +3022,7 @@ UpdateVBO(void)
   if (surfel_positions) delete [] surfel_positions;
   if (surfel_normals) delete [] surfel_normals;
   if (surfel_colors) delete [] surfel_colors;
-#endif
+//#endif
 }
 
 
@@ -3004,7 +3030,7 @@ UpdateVBO(void)
 void R3SurfelViewer::
 DrawVBO(int color_scheme) const
 {
-#if (R3_SURFEL_VIEWER_DRAW_METHOD == R3_SURFEL_VIEWER_DRAW_WITH_VBO)
+//#if (R3_SURFEL_VIEWER_DRAW_METHOD == R3_SURFEL_VIEWER_DRAW_WITH_VBO)
   // Update VBO
   ((R3SurfelViewer *) this)->UpdateVBO();
 
@@ -3013,6 +3039,7 @@ DrawVBO(int color_scheme) const
 
   // Determine stride and point size
   int subsampling = 1;
+#if 0
   float pointSize = SurfelSize();
   if (color_scheme == R3_SURFEL_VIEWER_COLOR_BY_PICK_INDEX)
     pointSize = 0.01 * Viewport().Width() + 1;
@@ -3023,20 +3050,62 @@ DrawVBO(int color_scheme) const
       glPointSize(pointSize);
     }
   }
+#else
+  float pointSize = 1.0f;
+  glPointSize(pointSize);
+#endif
 
   // Assign shader and its variables
   if (shader_program > 0) {
     glUseProgram(shader_program);
-    int pointSizeLocation = glGetUniformLocation(shader_program, "pointSize");
-    glUniform1f(pointSizeLocation, pointSize);
+    //int pointSizeLocation = glGetUniformLocation(shader_program, "pointSize");
+    //glUniform1f(pointSizeLocation, pointSize);
   }
 
   // Enable position buffer
   if (vbo_position_buffer > 0) {
+    //glBindBuffer(GL_ARRAY_BUFFER, vbo_position_buffer);
+    //glVertexPointer(3, GL_FLOAT, 3 * sizeof(GLfloat) * subsampling, 0);
+    //glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableVertexAttribArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, vbo_position_buffer);
-    glVertexPointer(3, GL_FLOAT, 3 * sizeof(GLfloat) * subsampling, 0);
-    glEnableClientState(GL_VERTEX_ARRAY);
+    glVertexAttribPointer(0,
+                          3,              // Number of floats
+                          GL_FLOAT,       // type
+                          GL_FALSE,       // normalized?
+                          3 * sizeof(GLfloat) * subsampling, // stride (bytes)
+                          0               // array buffer offset
+    );
+
+    glEnableVertexAttribArray(1);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo_color_buffer);
+    glVertexAttribPointer(1,
+                          3,              // Number of floats
+                          GL_UNSIGNED_BYTE,       // type
+                          GL_TRUE,       // normalized?
+                          3 * sizeof(GLubyte) * subsampling, // stride (bytes)
+                          0               // array buffer offset
+    );
+
+    // Nasty hack to bind the legacy FF matrix stack to the shader uniform...
+    {
+      float matrix[16];
+      glGetFloatv(GL_MODELVIEW_MATRIX, matrix);
+      glMatrixMode(GL_PROJECTION);
+      glPushMatrix();
+      glMultMatrixf(matrix);
+      glGetFloatv(GL_PROJECTION_MATRIX, matrix);
+      //PrintMatrix(matrix);
+      glUniformMatrix4fv(mvp_matrix, 1, GL_FALSE, matrix);
+      glPopMatrix();
+    }
+
+    glDrawArrays(GL_POINTS, 0, vbo_nsurfels);
+
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(0);
   }
+#if 0
 
   // Enable color/normal buffers
   if (color_scheme == R3_SURFEL_VIEWER_COLOR_BY_PICK_INDEX) {
@@ -3088,10 +3157,11 @@ DrawVBO(int color_scheme) const
   glDisableClientState(GL_VERTEX_ARRAY);
   glDisableClientState(GL_NORMAL_ARRAY);
   glDisableClientState(GL_COLOR_ARRAY);
+#endif
 
   // Reset shader
   glUseProgram(0);
-#endif
+//#endif
 }
 
 
@@ -3105,27 +3175,36 @@ CompileShaders(void)
 {
   // Inline GLSL 1.1 vertex shader definition
   const GLchar* vertex_shader_source =
-       "#version 110\n"
+       //"#version 110\n"
+       //"#version 300 es\n"
        "attribute vec3 inPosition;"
        "attribute vec3 inColor;"
-       "uniform float pointSize;"
+       "uniform mat4 mvp;"
+       //"uniform float pointSize;"
        "varying vec4 vertexColor;"
        "void main()"
        "{"
-       "    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
-       "    vertexColor = gl_Color;"
-       "    gl_PointSize = pointSize;" // Replicate the current functionality
+       //"    gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;"
+       //"    gl_Position = gl_ModelViewProjectionMatrix * vec4(inPosition, 1.0);"
+       "    gl_Position = mvp * vec4(inPosition, 1.0);"
+       //"    vertexColor = gl_Color;"
+       //"    vertexColor = vec4(1.0, 0.0, 0.0, 1.0);"
+       //"    gl_PointSize = pointSize;" // Replicate the current functionality
+       "    gl_PointSize = 2.0;" // Replicate the current functionality
+       //"    vertexColor = vec4(inColor.r / 255.0, inColor.g / 255.0, inColor.b / 255.0, 1.0); "
+       "    vertexColor = vec4(inColor.r, inColor.g, inColor.b, 1.0); "
+       //"    vertexColor = vec4(0.0, 1.0, 0.0, 1.0); "
        // Alternative: uncomment to divide by clip space w to scale based on distance.
        // If we do this, we also need to increase the pointSize to compensate:
        //"    gl_PointSize = pointSize / gl_Position.w;"
        "}";
                                                                                   // Inline GLSL 1.1 fragment shader definition
   const GLchar* fragment_shader_source =
-       "#version 110\n"
+      //"#version 110\n"
        "varying vec4 vertexColor;"
        "void main()"
        "{"
-       "        gl_FragColor = vertexColor;"
+       "        gl_FragColor = vertexColor; "
        "}";
 
   // Compile the vertex shader
@@ -3185,6 +3264,7 @@ CompileShaders(void)
     DeleteShaders();
     return;
   }
+  mvp_matrix = glGetUniformLocation(shader_program, "mvp");
 }
 
 

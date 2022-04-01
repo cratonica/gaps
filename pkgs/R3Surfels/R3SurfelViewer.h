@@ -403,6 +403,7 @@ protected:
   GLuint vbo_position_buffer;
   GLuint vbo_normal_buffer;
   GLuint vbo_color_buffer;
+  GLuint mvp_matrix;
   unsigned int vbo_nsurfels;
 
   // Shader objects

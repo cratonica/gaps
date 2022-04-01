@@ -2,14 +2,14 @@
 // Text drawing utility functions
 ////////////////////////////////////////////////////////////////////////
 
-#include "fglut/fglut.h"
+#include <GL/glut.h>
 
 inline void 
 DrawText(const R2Point& p, const char *s, void *font = GLUT_BITMAP_HELVETICA_12)
 {
   // Draw text string s and position p
-  glRasterPos2d(p[0], p[1]);
-  while (*s) glutBitmapCharacter(font, *(s++));
+  //glRasterPos2d(p[0], p[1]);
+  //while (*s) glutBitmapCharacter(font, *(s++));
 }
   
 

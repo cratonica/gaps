@@ -10,6 +10,8 @@
 
 #include "RGBD.h"
 
+#include <algorithm>
+
 
 
 ////////////////////////////////////////////////////////////////////////
@@ -792,9 +794,11 @@ DrawPoints(int color_scheme, int skip) const
 
   // Enable lighting and material
   if (color_scheme == RGBD_RENDER_COLOR_SCHEME) {
+#if 0
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
     glEnable(GL_LIGHTING);
+#endif
   }
 
   // Draw color
@@ -854,14 +858,18 @@ DrawSurfels(int color_scheme, int skip) const
   // Get info about current view
   GLint viewport[4];
   GLdouble modelview_matrix[16];
+  GLfloat fmodelview_matrix[16];
   GLdouble projection_matrix[16];
+  GLfloat fprojection_matrix[16];
   R3Point c0(0, 0, 0), w0;
   R3Point c1(0, 0, -1), w1;
   R3Point c2(1, 0, -1), w2;
   R3Point c3(0, 1, -1), w3;
   glGetIntegerv(GL_VIEWPORT, viewport);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-  glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+  glGetFloatv(GL_MODELVIEW_MATRIX, fmodelview_matrix);
+  std::transform(fmodelview_matrix, fmodelview_matrix + 16, modelview_matrix, [](float v) { return static_cast<double>(v); });
+  glGetFloatv(GL_PROJECTION_MATRIX, fprojection_matrix);
+  std::transform(fmodelview_matrix, fprojection_matrix + 16, projection_matrix, [](float v) { return static_cast<double>(v); });
   gluUnProject(c0[0], c0[1], c0[2], modelview_matrix, projection_matrix, viewport, &(w0[0]), &(w0[1]), &(w0[2]));
   gluUnProject(c1[0], c1[1], c1[2], modelview_matrix, projection_matrix, viewport, &(w1[0]), &(w1[1]), &(w1[2]));
   gluUnProject(c2[0], c2[1], c2[2], modelview_matrix, projection_matrix, viewport, &(w2[0]), &(w2[1]), &(w2[2]));
@@ -913,10 +921,14 @@ DrawQuads(int color_scheme, int skip) const
   // Get info about current view
   GLint viewport[4];
   GLdouble modelview_matrix[16];
+  GLfloat fmodelview_matrix[16];
   GLdouble projection_matrix[16];
+  GLfloat fprojection_matrix[16];
   glGetIntegerv(GL_VIEWPORT, viewport);
-  glGetDoublev(GL_MODELVIEW_MATRIX, modelview_matrix);
-  glGetDoublev(GL_PROJECTION_MATRIX, projection_matrix);
+  glGetFloatv(GL_MODELVIEW_MATRIX, fmodelview_matrix);
+  std::transform(fmodelview_matrix, fmodelview_matrix + 16, modelview_matrix, [](float v) { return static_cast<double>(v); });
+  glGetFloatv(GL_PROJECTION_MATRIX, fprojection_matrix);
+  std::transform(fmodelview_matrix, fprojection_matrix + 16, projection_matrix, [](float v) { return static_cast<double>(v); });
 
   // Push transformation
   CameraToWorld().Push();
@@ -1853,8 +1865,10 @@ UpdateOpenGL(void)
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  gluBuild2DMipmaps(GL_TEXTURE_2D, 3, rgb_image.Width(), rgb_image.Height(),
-    GL_RGB, GL_UNSIGNED_BYTE, (const unsigned char *) rgb_image.Pixels());
+
+  // Just disable mipmaps for now since not supported in Emscripten.
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  //gluBuild2DMipmaps(GL_TEXTURE_2D, 3, rgb_image.Width(), rgb_image.Height(), GL_RGB, GL_UNSIGNED_BYTE, (const unsigned char *) rgb_image.Pixels());
 
   // Remember identifier
   opengl_texture_id = identifier;

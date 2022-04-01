@@ -7,7 +7,13 @@
 # Library file names
 #
 
+#ARCH=$(shell uname -m)
+
+OS=$(shell uname -s)
 ARCH=$(shell uname -m)
+ARCH=wasmarch
+AR=emar
+
 LIB_DIR=../lib/$(ARCH)
 LIB=$(LIB_DIR)/libgaps.a
 PKG_LIBS= \
@@ -20,7 +26,6 @@ PKG_LIBS= \
   $(LIB_DIR)/libR2Shapes.a \
   $(LIB_DIR)/libRNMath.a \
   $(LIB_DIR)/libRNBasics.a \
-  $(LIB_DIR)/libfglut.a \
   $(LIB_DIR)/libjpeg.a \
   $(LIB_DIR)/libpng.a
 
@@ -60,7 +65,6 @@ target:
 	cd R3Surfels; $(MAKE) $(TARGET)
 	cd RGBD; $(MAKE) $(TARGET)
 	cd GSV; $(MAKE) $(TARGET)
-	cd fglut; $(MAKE) $(TARGET)
 	cd jpeg; $(MAKE) $(TARGET)
 	cd png; $(MAKE) $(TARGET)
 
