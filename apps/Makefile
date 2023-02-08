@@ -19,7 +19,8 @@ release:
 	cp Makefile ../release/apps
 	$(MAKE) target "TARGET=$@"
 
-target: 
+target:  # WASM builds don't produce apps, only libs
+ifeq (,$(findstring wasm,$(ARCH)))
 	cd img2img; $(MAKE) $(TARGET)
 	cd img2pd; $(MAKE) $(TARGET)
 	cd pd2img; $(MAKE) $(TARGET)
@@ -57,6 +58,7 @@ target:
 	cd sflview; $(MAKE) $(TARGET)
 	#cd sfllabel; $(MAKE) $(TARGET)
 	cd gapsview; $(MAKE) $(TARGET)
+endif
 
 
 

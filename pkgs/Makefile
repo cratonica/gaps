@@ -7,7 +7,9 @@
 # Library file names
 #
 
-ARCH=$(shell uname -m)
+ifndef ARCH
+  ARCH=$(shell uname -m)
+endif
 LIB_DIR=../lib/$(ARCH)
 LIB=$(LIB_DIR)/libgaps.a
 PKG_LIBS= \
@@ -32,12 +34,12 @@ PKG_LIBS= \
 opt:
 	$(MAKE) target "TARGET=$@"
 	rm -f $(LIB)
-	ar ur $(LIB) $(PKG_LIBS)
+	$(AR) ur $(LIB) $(PKG_LIBS)
 
 debug:
 	$(MAKE) target "TARGET=$@"
 	rm -f $(LIB)
-	ar ur $(LIB) $(PKG_LIBS)
+	$(AR) ur $(LIB) $(PKG_LIBS)
 
 mesa:
 	$(MAKE) target "TARGET=$@"
@@ -50,7 +52,7 @@ release:
 	cp Makefile ../release/pkgs
 	$(MAKE) target "TARGET=$@"
 
-target: 
+target:
 	cd RNBasics; $(MAKE) $(TARGET)
 	cd RNMath; $(MAKE) $(TARGET)
 	cd R2Shapes; $(MAKE) $(TARGET)
@@ -60,9 +62,14 @@ target:
 	cd R3Surfels; $(MAKE) $(TARGET)
 	cd RGBD; $(MAKE) $(TARGET)
 	cd GSV; $(MAKE) $(TARGET)
+ifeq (,$(findstring wasm,$(ARCH)))
+	# None of these are needed by
+	# Emscripten since it provides its
+	# own equivalent libraries.
 	cd fglut; $(MAKE) $(TARGET)
 	cd jpeg; $(MAKE) $(TARGET)
 	cd png; $(MAKE) $(TARGET)
+endif
 
 
 

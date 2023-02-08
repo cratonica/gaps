@@ -18,7 +18,9 @@ INCS=$(HSRCS) $(CCSRCS:.cpp=.h) $(CSRCS:.c=.h)
 #
 
 OS=$(shell uname -s)
-ARCH=$(shell uname -m)
+ifndef ARCH
+  ARCH=$(shell uname -m)
+endif
 
 
 
@@ -30,7 +32,16 @@ ARCH=$(shell uname -m)
 #OS_CFLAGS=-Wl,-stack_size,0x100000000
 #endif
 
-CC=g++
+ifneq (,$(findstring wasm,$(ARCH)))
+  CXX=emcc
+  CC=emcc
+  AR=emar
+else
+  CXX=g++
+  CC=gcc
+  AR=ar
+endif
+
 BASE_CFLAGS=$(USER_CFLAGS) $(OS_CFLAGS) -Wall -I. -I../../pkgs
 DEBUG_CFLAGS=$(BASE_CFLAGS) -g
 OPT_CFLAGS=$(BASE_CFLAGS) -O3 -DNDEBUG
@@ -59,11 +70,11 @@ LIB_DIR=../../lib/$(ARCH)
 .SUFFIXES: .cpp .C .c .o
 
 .cpp.o: 
-	$(CC) $(CFLAGS) -c $<
+	$(CXX) $(CFLAGS) -c $<
 
 .C.o: 
-	$(CC) $(CFLAGS) -c $<
+	$(CXX) $(CFLAGS) -c $<
 
 .c.o: 
-	gcc $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
